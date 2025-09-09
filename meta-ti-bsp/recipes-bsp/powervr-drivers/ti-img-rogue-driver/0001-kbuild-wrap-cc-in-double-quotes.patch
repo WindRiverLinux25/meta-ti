@@ -12,7 +12,7 @@ Quoting the variable "CC" ensures that if the compiler path (or any argument)
 contains spaces or special characters, the shell interprets it as a single
 value. Without quotes, paths with spaces would be split and cause build errors.
 
-Upstream-Status: Will send upstream later
+Upstream-Status: Submitted [https://lists.yoctoproject.org/g/meta-ti/message/16672]
 
 Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
 ---

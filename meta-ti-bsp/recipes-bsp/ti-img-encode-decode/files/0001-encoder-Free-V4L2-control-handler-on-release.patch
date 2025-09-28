@@ -1,0 +1,57 @@
+From 1800758aa62268c331b55cb2761169c3db4ae0a5 Mon Sep 17 00:00:00 2001
+From: Xulin Sun <xulin.sun@windriver.com>
+Date: Thu, 3 Apr 2025 11:58:58 +0800
+Subject: [PATCH 1/2] encoder: Free V4L2 control handler on release
+
+The v4l2 control handler was not being freed in the vxe_release
+function, leading to a memory leak. This patch adds a call to
+v4l2_ctrl_handler_free to release the control handler and associated
+controls when the device is released.
+
+This fixes the following kmemleak reports:
+unreferenced object 0xffffff8805e6eb00 (size 256):
+  comm "v4l_id", pid 282, jiffies 4294894746 (age 1490.272s)
+  hex dump (first 32 bytes):
+    00 ed e6 05 88 ff ff ff 00 ec e6 05 88 ff ff ff  ................
+    10 eb e6 05 88 ff ff ff 10 eb e6 05 88 ff ff ff  ................
+  backtrace:
+    __kmem_cache_alloc_node+0x1d4/0x2d8
+    __kmalloc_node+0x64/0x238
+    kvmalloc_node+0x24/0x120
+    v4l2_ctrl_new+0x1ec/0x8f0
+    v4l2_ctrl_new_std+0xd4/0x128
+    vxe_open+0x254/0x438 [vxe_enc]
+    v4l2_open+0x84/0x138
+    chrdev_open+0xc4/0x218
+    do_dentry_open+0x1bc/0x538
+    vfs_open+0x34/0x40
+    path_openat+0xb24/0xe08
+    do_filp_open+0xa4/0x160
+    do_sys_openat2+0xcc/0x108
+    __arm64_sys_openat+0x6c/0xc0
+    invoke_syscall+0x5c/0x138
+    el0_svc_common.constprop.0+0xc8/0xf0
+
+Upstream-Status: Inappropriate [no public mailing list]
+
+Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
+Signed-off-by: Bruce Ashfield <bruce.ashfield@gmail.com>
+---
+ encoder/vxe_v4l2.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/encoder/vxe_v4l2.c b/encoder/vxe_v4l2.c
+index 58f104f..3d16b6c 100644
+--- a/encoder/vxe_v4l2.c
++++ b/encoder/vxe_v4l2.c
+@@ -921,6 +921,7 @@ static int vxe_release(struct file *file)
+ 
+ 	mutex_lock((struct mutex *)vxe->mutex);
+ 
++	v4l2_ctrl_handler_free(&ctx->v4l2_ctrl_hdl);
+ 	v4l2_fh_del(&ctx->fh);
+ 	v4l2_fh_exit(&ctx->fh);
+ 	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
+-- 
+2.49.1
+

@@ -1,0 +1,70 @@
+From 153726590736805d0b8d92d44d49b23e642e8feb Mon Sep 17 00:00:00 2001
+From: Xulin Sun <xulin.sun@windriver.com>
+Date: Thu, 3 Apr 2025 11:58:59 +0800
+Subject: [PATCH 2/2] decoder: Free V4L2 control handler and mutex2 on release
+
+The v4l2 control handler and mutex2 were not being freed in the
+vxd_dec_release function, leading to a memory leak. This patch adds a
+call to v4l2_ctrl_handler_free to release the control handler and
+associated controls, and also frees the mutex2 when the device is
+released.
+
+This fixes the following kmemleak reports:
+unreferenced object 0xffffff880a375800 (size 256):
+  comm "v4l_id", pid 246, jiffies 4294895188 (age 93.976s)
+  hex dump (first 32 bytes):
+    08 b3 9e 09 88 ff ff ff 00 5a 37 0a 88 ff ff ff  .........Z7.....
+    10 58 37 0a 88 ff ff ff 10 58 37 0a 88 ff ff ff  .X7......X7.....
+  backtrace:
+    __kmem_cache_alloc_node+0x1f4/0x350
+    __kmalloc_node+0x64/0x238
+    kvmalloc_node+0x24/0x120
+    v4l2_ctrl_new+0x1ec/0x8f0
+    v4l2_ctrl_new_custom+0xec/0x1e8
+    vxd_dec_open+0x168/0x3a0 [vxd_dec]
+    v4l2_open+0x84/0x130
+    chrdev_open+0xc4/0x218
+    do_dentry_open+0x1bc/0x538
+    vfs_open+0x34/0x40
+    path_openat+0xb30/0xe18
+    do_filp_open+0xa4/0x160
+    do_sys_openat2+0xcc/0x108
+    __arm64_sys_openat+0x6c/0xc0
+    invoke_syscall+0x5c/0x138
+    el0_svc_common.constprop.0+0xc8/0xf0
+
+Upstream-Status: Inappropriate [no public mailing list]
+
+Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
+Signed-off-by: Bruce Ashfield <bruce.ashfield@gmail.com>
+---
+ decoder/vxd_v4l2.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/decoder/vxd_v4l2.c b/decoder/vxd_v4l2.c
+index 624be64..1e1336e 100644
+--- a/decoder/vxd_v4l2.c
++++ b/decoder/vxd_v4l2.c
+@@ -1329,6 +1329,8 @@ static int vxd_dec_release(struct file *file)
+ 
+ 	idr_remove(vxd->streams, ctx->stream.id);
+ 
++	v4l2_ctrl_handler_free(&ctx->v4l2_ctrl_hdl);
++
+ 	v4l2_fh_del(&ctx->fh);
+ 
+ 	v4l2_fh_exit(&ctx->fh);
+@@ -1339,6 +1341,10 @@ static int vxd_dec_release(struct file *file)
+ 	kfree(ctx->mutex);
+ 	ctx->mutex = NULL;
+ 
++	mutex_destroy(ctx->mutex2);
++	kfree(ctx->mutex2);
++	ctx->mutex2 = NULL;
++
+ 	get_work_buff(ctx->work, TRUE);
+ 	kfree(ctx->work);
+ 	kfree(ctx);
+-- 
+2.49.1
+

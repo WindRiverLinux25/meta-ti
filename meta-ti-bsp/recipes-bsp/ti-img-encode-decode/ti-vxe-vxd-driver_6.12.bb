@@ -14,7 +14,8 @@ BRANCH = "scarthgap/k${PV}"
 
 SRC_URI = "git://git.ti.com/git/multimedia/img-vxe-vxd.git;protocol=https;branch=${BRANCH} \
            file://0001-encoder-Free-V4L2-control-handler-on-release.patch \
-           file://0002-decoder-Free-V4L2-control-handler-and-mutex2-on-rele.patch"
+           file://0002-decoder-Free-V4L2-control-handler-and-mutex2-on-rele.patch \
+           file://0003-vxe_enc-replace-local-MAX-macro-with-MAX_T-to-fix-re.patch"
 
 SRCREV = "038d9263c67900ea4eff631820b088a3dc3a6ad5"
 

@@ -1,0 +1,75 @@
+From f7eb3d64ff83c5e9d71aad48f414cf96cdb160cb Mon Sep 17 00:00:00 2001
+From: Xulin Sun <xulin.sun@windriver.com>
+Date: Wed, 22 Oct 2025 15:27:14 +0800
+Subject: [PATCH] vxe_enc: replace local MAX macro with MAX_T to fix redefine
+ error
+
+The commit 1a251f52cfdc4 (minmax: make generic MIN() and MAX() macros
+available everywhere) introduced globally accessible MAX() macros.
+As a result, the duplicate MAX() definitions in the vxe_enc drivers
+should be removed to prevent compilation issues as below:
+
+encoder/vxe_enc.c:24:9: error: "MAX" redefined [-Werror]
+|    24 | #define MAX(a, b, type) ({ \
+|       |         ^~~
+
+Upstream-Status: Inappropriate [no public mailing list]
+
+Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
+---
+ encoder/vxe_enc.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/encoder/vxe_enc.c b/encoder/vxe_enc.c
+index ef58158..b751ca9 100644
+--- a/encoder/vxe_enc.c
++++ b/encoder/vxe_enc.c
+@@ -21,11 +21,6 @@
+ #include "topazmmu.h"
+ #include "vxe_enc.h"
+ 
+-#define MAX(a, b, type) ({ \
+-		type __a = a; \
+-		type __b = b; \
+-		(((__a) >= (__b)) ? (__a) : (__b)); })
+-
+ void mmu_callback(enum mmu_callback_type callback_type,
+ 		  int buff_id, void *data)
+ {
+@@ -170,7 +165,7 @@ int calculate_h264_level(unsigned int width, unsigned int height, unsigned int f
+ 		temp_level = 100;
+ 	}
+ 
+-	level = MAX(level, temp_level, unsigned int);
++	level = MAX_T(unsigned int, level, temp_level);
+ 
+ 	/* now restrict based on the number of macroblocks per second */
+ 	if (mbs > 2073600) {
+@@ -206,7 +201,7 @@ int calculate_h264_level(unsigned int width, unsigned int height, unsigned int f
+ 		temp_level = 100;
+ 	}
+ 
+-	level = MAX(level, temp_level, unsigned int);
++	level = MAX_T(unsigned int, level, temp_level);
+ 
+ 	if (rc_enable) {
+ 		/*
+@@ -248,13 +243,13 @@ int calculate_h264_level(unsigned int width, unsigned int height, unsigned int f
+ 		else
+ 			temp_level = 100;
+ 
+-		level = MAX(level, temp_level, unsigned int);
++		level = MAX_T(unsigned int, level, temp_level);
+ 	} else {
+ 		level = 510;
+ 	}
+ 
+ 	if (lossless)
+-		level = MAX(level, lossless_min_level, unsigned int);
++		level = MAX_T(unsigned int, level, lossless_min_level);
+ 
+ 	return level;
+ }
+-- 
+2.34.1
+

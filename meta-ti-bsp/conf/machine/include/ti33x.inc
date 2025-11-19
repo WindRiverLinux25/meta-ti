@@ -9,7 +9,6 @@ require conf/machine/include/ti-bsp.inc
 # Graphics providers and variables
 require conf/machine/include/mesa-pvr.inc
 PREFERRED_PROVIDER_virtual/gpudriver ?= "${BSP_SGX_DRIVER_PROVIDER}"
-PVR_DISPLAY_CONTROLLER_ALIAS ?= "tilcdc"
 
 KERNEL_IMAGETYPE = "zImage"
 
@@ -64,8 +63,6 @@ UBOOT_MACHINE = "am335x_evm_config"
 UBOOT_ENTRYPOINT = "0x80008000"
 UBOOT_LOADADDRESS = "0x80008000"
 
-DEVICETREE_FILE = "${@(d.getVar('KERNEL_DEVICETREE') or "").replace("ti/omap/","")}"
-
 # Generate an extlinux.conf file
 UBOOT_EXTLINUX = "1"
 UBOOT_EXTLINUX_ROOT = "root=PARTUUID=${uuid}"
@@ -73,7 +70,7 @@ UBOOT_EXTLINUX_KERNEL_ARGS = "rootwait rw earlycon"
 UBOOT_EXTLINUX_BOOT_FILES = " \
     extlinux.conf;extlinux/extlinux.conf \
     ${KERNEL_IMAGETYPE} \
-    ${DEVICETREE_FILE} \
+    ${DEVICETREE_FILES} \
 "
 
 SPL_BINARY = "MLO"
@@ -90,7 +87,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "kernel-image-zimage"
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += "amx3-cm3 prueth-fw pruhsr-fw pruprp-fw"
 
 # List common SoC features, may need to add touchscreen for specific machines
-MACHINE_FEATURES = "apm usbgadget usbhost vfat ext2 alsa gpu"
+MACHINE_FEATURES = "apm usbgadget usbhost vfat ext2 alsa"
 
 IMAGE_FSTYPES += "tar.xz wic.xz wic.bmap"
 WKS_FILE ?= "sdimage-2part.wks"

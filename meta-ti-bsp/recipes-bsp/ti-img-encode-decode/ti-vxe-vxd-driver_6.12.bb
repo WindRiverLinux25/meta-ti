@@ -17,10 +17,10 @@ SRC_URI = "git://git.ti.com/git/multimedia/img-vxe-vxd.git;protocol=https;branch
            file://0002-decoder-Free-V4L2-control-handler-and-mutex2-on-rele.patch \
            file://0003-vxe_enc-replace-local-MAX-macro-with-MAX_T-to-fix-re.patch"
 
-SRCREV = "038d9263c67900ea4eff631820b088a3dc3a6ad5"
+SRCREV = "0bcbb20af32ea13275b452f0e84f5a49966d0bf6"
 
 TARGET_PRODUCT:j721e = "j721e_linux"
 
-S = "${WORKDIR}/git"
-
 EXTRA_OEMAKE += 'KERNEL_DIR="${STAGING_KERNEL_DIR}" PREFIX="${D}"'
+
+RDEPENDS:${PN} += "ti-multimedia-udev"

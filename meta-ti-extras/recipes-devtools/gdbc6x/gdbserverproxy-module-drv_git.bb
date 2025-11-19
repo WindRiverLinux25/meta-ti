@@ -9,14 +9,13 @@ SRC_URI:append = "\
     file://0002-Support-Linux-kernels-v6.6.patch;patchdir=../.. \
 "
 
-S = "${WORKDIR}/git/kernel_module/gdbproxy-mod"
+S:append = "/kernel_module/gdbproxy-mod"
 
 inherit module
 
-PLATFORM = ""
-PLATFORM:dra7xx = "DRA7xx_PLATFORM"
+COMPATIBLE_MACHINE = "omap-a15"
 
-EXTRA_OEMAKE = "PLATFORM=${PLATFORM} KVERSION=${KERNEL_VERSION} KERNEL_SRC=${STAGING_KERNEL_DIR}"
+EXTRA_OEMAKE = "PLATFORM=DRA7xx_PLATFORM KVERSION=${KERNEL_VERSION} KERNEL_SRC=${STAGING_KERNEL_DIR}"
 
 # The following is to prevent an unused configure.ac from erroneously
 # triggering the QA check for gettext.
@@ -24,9 +23,6 @@ EXTRA_OECONF = "--disable-nls"
 do_configure() {
     :
 }
-
-COMPATIBLE_MACHINE = "dra7xx"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 include gdbc6x.inc
 

@@ -21,8 +21,6 @@ SRC_URI += " \
 	file://0001-kbuild-wrap-cc-in-double-quotes.patch \
 "
 
-S = "${WORKDIR}/git"
-
 SRCREV = "8eaff654a8871118c08cfafe53795f57e3b6b396"
 
 TARGET_PRODUCT:j721e = "j721e_linux"

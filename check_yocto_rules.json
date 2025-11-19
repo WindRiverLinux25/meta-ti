@@ -3,7 +3,7 @@
         "skip_vars" : [ "ALTERNATIVE", "FILES", "INSANE_SKIP", "RDEPENDS", "RRECOMMENDS" ]
     },
     "APPEND-2" : {
-        "skip_vars" : [ "KERNEL_LOCALVERSION", "PR", "PV" ],
+        "skip_vars" : [ "KERNEL_LOCALVERSION", "PR", "PV", "S" ],
         "file_regex" : {
             "meta-ti-bsp\\/recipes-graphics\\/mesa\\/mesa-pvr_\\S+\\.bb" : {
                 "skip_vars": [ "GALLIUMDRIVERS", "VULKAN_DRIVERS" ]
@@ -17,11 +17,18 @@
         "skip_files" : [
             "meta-ti-bsp/recipes-core/udev/eudev_%.bbappend",
             "meta-ti-bsp/recipes-devtools/binutils/binutils-cross-canadian_%.bbappend",
-            "meta-ti-bsp/recipes-security/optee/optee-%.bbappend"
+            "meta-ti-bsp/recipes-security/optee/optee-%.bbappend",
+            "meta-ti-bsp/dynamic-layers/openembedded-layer/recipes-bsp/u-boot/u-boot-ti-%.bbappend",
+            "meta-ti-bsp/dynamic-layers/openembedded-layer/recipes-ti/initramfs/packagegroup-ti-core-initramfs.bbappend"
         ]
     },
     "GUARD-2" : {
         "skip_vars" : [ "k3" , "ti-soc" ]
+    },
+    "GUARD-3" : {
+        "skip_files" : [
+            "meta-ti-bsp/recipes-security/optee/optee-os-tadevkit_%.bbappend"
+        ]
     },
     "SUMMARY-1" : {
         "skip_files" : [

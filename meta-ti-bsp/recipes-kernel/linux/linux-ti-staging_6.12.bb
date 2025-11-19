@@ -3,12 +3,11 @@ SUMMARY = "Linux kernel for TI devices"
 LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
-inherit ti-secdev
-inherit kernel
+require recipes-kernel/linux/ti-kernel.inc
+
+inherit ${KERNEL_BASE_CLASS}
 
 require recipes-kernel/linux/setup-defconfig.inc
-require recipes-kernel/linux/ti-kernel.inc
-include ${@ 'recipes-kernel/linux/ti-kernel-devicetree-prefix.inc' if d.getVar('KERNEL_DEVICETREE_PREFIX') else ''}
 include ${@ 'recipes-kernel/linux/ti-extras.inc' if d.getVar('TI_EXTRAS') else ''}
 
 DEPENDS += "gmp-native libmpc-native"
@@ -19,12 +18,12 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}-6.12:"
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT} \
 		      ${EXTRA_DTC_ARGS}"
 
-S = "${WORKDIR}/git"
+S = "${UNPACKDIR}/${BB_GIT_DEFAULT_DESTSUFFIX}"
 
 BRANCH ?= "ti-linux-6.12.y"
 
-SRCREV ?= "b0afb35642d79e776a4cf940945367cef87ba127"
-PV = "6.12.24+git"
+SRCREV ?= "1a86d36433eac7cef246d41fbd4d2bdd9612253f"
+PV = "6.12.49+git"
 
 KERNEL_REPRODUCIBILITY_PATCHES = " \
     file://0001-drivers-gpu-drm-msm-registers-improve-reproducibilit.patch \

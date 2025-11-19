@@ -4,17 +4,13 @@ LIC_FILES_CHKSUM = "file://COPYING.txt;md5=9d4316fe434ba450dca4da25348ca5a3"
 
 PV:append = "+git"
 
-S = "${WORKDIR}/git/debugss_module/debugss-mod"
+S:append = "/debugss_module/debugss-mod"
 
 inherit module
 
-PLATFORM = ""
-PLATFORM:dra7xx = "DRA7xx_PLATFORM"
+COMPATIBLE_MACHINE = "omap-a15"
 
-EXTRA_OEMAKE = "'PLATFORM=${PLATFORM}' KVERSION=${KERNEL_VERSION} KERNEL_SRC=${STAGING_KERNEL_DIR}"
-
-COMPATIBLE_MACHINE = "dra7xx"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
+EXTRA_OEMAKE = "PLATFORM=DRA7xx_PLATFORM KVERSION=${KERNEL_VERSION} KERNEL_SRC=${STAGING_KERNEL_DIR}"
 
 include dsptop.inc
 

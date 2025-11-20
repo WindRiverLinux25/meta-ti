@@ -5,6 +5,8 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=91dc4ee6d125d0aaba4e5bd2fcc50ed3"
 SRC_URI = "git://github.com/TexasInstruments/rpmsg-dma.git;protocol=https;branch=scarthgap"
 SRCREV = "153951932925a72346b76d98b2774952c48a82fc"
 
+S = "${WORKDIR}/git"
+
 inherit cmake
 
 DEPENDS = "ti-rpmsg-char"

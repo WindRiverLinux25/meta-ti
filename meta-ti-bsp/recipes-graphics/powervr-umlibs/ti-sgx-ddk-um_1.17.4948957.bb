@@ -42,6 +42,8 @@ TARGET_PRODUCT:am65xx = "ti654x_linux"
 
 RDEPENDS:${PN} += "libdrm ti-sgx-ddk-km"
 
+S = "${WORKDIR}/git"
+
 EXTRA_OEMAKE += "DESTDIR=${D} TARGET_PRODUCT=${TARGET_PRODUCT} ${PACKAGECONFIG_CONFARGS}"
 
 do_configure[noexec] = "1"

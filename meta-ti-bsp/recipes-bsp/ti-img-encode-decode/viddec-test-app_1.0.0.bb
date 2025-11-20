@@ -16,3 +16,5 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 BRANCH = "master"
 SRC_URI = "git://git.ti.com/git/jacinto7_multimedia/viddec-test-app.git;protocol=https;branch=${BRANCH}"
+
+S = "${WORKDIR}/git"

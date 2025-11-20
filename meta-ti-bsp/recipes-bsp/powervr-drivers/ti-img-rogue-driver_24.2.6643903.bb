@@ -20,6 +20,7 @@ SRC_URI = "git://git.ti.com/git/graphics/ti-img-rogue-driver.git;protocol=https;
 SRC_URI += " \
 	file://0001-kbuild-wrap-cc-in-double-quotes.patch \
 "
+S = "${WORKDIR}/git"
 
 SRCREV = "8eaff654a8871118c08cfafe53795f57e3b6b396"
 

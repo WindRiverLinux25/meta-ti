@@ -22,6 +22,7 @@ SRC_URI = " \
 "
 
 SRCREV = "68af6a102c2298569e77d1aa8bccc1ff61438b3e"
+S = "${WORKDIR}/git"
 PV = "24.0.1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

@@ -1,4 +1,4 @@
-From 153726590736805d0b8d92d44d49b23e642e8feb Mon Sep 17 00:00:00 2001
+From a0f0b8bc1d27c14231396a516d01e366d96c8048 Mon Sep 17 00:00:00 2001
 From: Xulin Sun <xulin.sun@windriver.com>
 Date: Thu, 3 Apr 2025 11:58:59 +0800
 Subject: [PATCH 2/2] decoder: Free V4L2 control handler and mutex2 on release
@@ -42,19 +42,19 @@ Signed-off-by: Bruce Ashfield <bruce.ashfield@gmail.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/decoder/vxd_v4l2.c b/decoder/vxd_v4l2.c
-index 624be64..1e1336e 100644
+index 817d983..21fbbaa 100644
 --- a/decoder/vxd_v4l2.c
 +++ b/decoder/vxd_v4l2.c
-@@ -1329,6 +1329,8 @@ static int vxd_dec_release(struct file *file)
+@@ -1333,6 +1333,8 @@ static int vxd_dec_release(struct file *file)
  
  	idr_remove(vxd->streams, ctx->stream.id);
  
 +	v4l2_ctrl_handler_free(&ctx->v4l2_ctrl_hdl);
 +
- 	v4l2_fh_del(&ctx->fh);
- 
- 	v4l2_fh_exit(&ctx->fh);
-@@ -1339,6 +1341,10 @@ static int vxd_dec_release(struct file *file)
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+ 	v4l2_fh_del(&ctx->fh, file);
+ #else
+@@ -1347,6 +1349,10 @@ static int vxd_dec_release(struct file *file)
  	kfree(ctx->mutex);
  	ctx->mutex = NULL;
  

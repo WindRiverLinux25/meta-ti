@@ -1,4 +1,4 @@
-From 1800758aa62268c331b55cb2761169c3db4ae0a5 Mon Sep 17 00:00:00 2001
+From 0fe8e6381f9a864ba10cbae2b970eab514ea22cc Mon Sep 17 00:00:00 2001
 From: Xulin Sun <xulin.sun@windriver.com>
 Date: Thu, 3 Apr 2025 11:58:58 +0800
 Subject: [PATCH 1/2] encoder: Free V4L2 control handler on release
@@ -37,21 +37,22 @@ Upstream-Status: Inappropriate [no public mailing list]
 Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
 Signed-off-by: Bruce Ashfield <bruce.ashfield@gmail.com>
 ---
- encoder/vxe_v4l2.c | 1 +
- 1 file changed, 1 insertion(+)
+ encoder/vxe_v4l2.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/encoder/vxe_v4l2.c b/encoder/vxe_v4l2.c
-index 58f104f..3d16b6c 100644
+index 4e1c8d8..ba4a5fe 100644
 --- a/encoder/vxe_v4l2.c
 +++ b/encoder/vxe_v4l2.c
-@@ -921,6 +921,7 @@ static int vxe_release(struct file *file)
+@@ -925,6 +925,8 @@ static int vxe_release(struct file *file)
  
  	mutex_lock((struct mutex *)vxe->mutex);
  
 +	v4l2_ctrl_handler_free(&ctx->v4l2_ctrl_hdl);
- 	v4l2_fh_del(&ctx->fh);
- 	v4l2_fh_exit(&ctx->fh);
- 	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
++
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+ 	v4l2_fh_del(&ctx->fh, file);
+ #else
 -- 
 2.49.1
 

@@ -29,6 +29,7 @@ SRC_URI = "${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};${UBOOT_GIT_BRANCH};n
 
 FILESEXTRAPATHS:prepend := "${COREBASE}/meta/recipes-bsp/u-boot/files:"
 SRC_URI += "file://CVE-2024-42040.patch \
+            file://CVE-2025-24857.patch \
 "
 
 SRCREV_FORMAT = "uboot"
